@@ -1,7 +1,7 @@
 import pygame as pg
 
 class string():
-    def __init__(self, win, start, end, lifespan):
+    def __init__(self, win : pg.surface, start : tuple, end : tuple, lifespan : int):
         self.win = win
         self.start = start
         self.end = end

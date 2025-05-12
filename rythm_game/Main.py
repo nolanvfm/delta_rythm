@@ -1,4 +1,5 @@
 import sys
+import pygame as pg
 from pygame.locals import *
 from Game.Ball import *
 from Game.Key import *
@@ -28,15 +29,15 @@ def pg_events():
 
     elif event.type == pg.KEYDOWN:
         if event.key == pg.K_h:
-          temp = HitBall(WINDOW, (255,255,255))
+          temp = HitBall(WINDOW, (255,255,255), 0.2)
           Balls.append(temp)
-          Balls.append(HalfBall(WINDOW, (0,255,255), [temp.velocity[0],temp.velocity[1]], 30))
-          preventBalls.append(PreventBall(WINDOW, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30))
+          Balls.append(HalfBall(WINDOW, (0,255,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2 ))
+          preventBalls.append(PreventBall(WINDOW, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2))
 
         if event.key == pg.K_b:
           temp = HitBall(WINDOW, (255,255,255))
           Balls.append(temp)
-          preventBalls.append(PreventBall(WINDOW, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30))
+          preventBalls.append(PreventBall(WINDOW, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2))
           
         if event.key == pg.K_z:
           Balls.clear()

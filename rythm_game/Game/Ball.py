@@ -6,13 +6,14 @@ from Game.Key import Point
 
 class Ball():
     """do not use this class, this is only a parent"""
-    def __init__(self, win : pg.surface, color : tuple):
-        self.y = 500
-        self.x = 500
-        self.velocity = [0 + random.randint(1,20) ,0 + random.randint(1,20)]
+    def __init__(self, win : pg.surface, color : tuple, power : float):
+        self.y = 100
+        self.x = 100
+        self.velocity = [0 + random.randint(1,int(power*20)) ,0 + random.randint(1,20)]
         self.windows = win
         self.radius = 10
         self.color = color
+        self.power = power
     
     def update(self):
         self.gravity()
@@ -23,32 +24,32 @@ class Ball():
         """pulls the ball's velocity towards the center of the screen"""
         # distance = math.sqrt((self.windows.get_width()/2 - self.x)**2 + (self.windows.get_height()/2 - self.y)**2)
         if self.y < self.windows.get_height()/2:
-            self.velocity[1] += 1
+            self.velocity[1] += self.power
         else:
-            self.velocity[1] -= 1
+            self.velocity[1] -= self.power
 
         if self.x < self.windows.get_width()/2:
-            self.velocity[0] += 1
+            self.velocity[0] += self.power
         else:
-            self.velocity[0] -= 1
+            self.velocity[0] -= self.power
 
     def move(self):
         """adds velocity"""
-        self.y += self.velocity[1]
-        self.x += self.velocity[0]
+        self.y += self.velocity[1] * self.power
+        self.x += self.velocity[0] * self.power
     
     def draw(self):
         pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
 
 
 class PreventBall(Ball):
-    def __init__(self, win : pg.surface, color : tuple,add : list, frames_advantage : int):
+    def __init__(self, win : pg.surface, color : tuple,add : list, frames_advantage : int, power : float):
         """window to draw on, ball color, ball to predict, number of frames more than copied ball"""
-        super().__init__(win, color)
+        super().__init__(win, color, power)
         self.velocity = add
         self.frames_adv = frames_advantage
         self.strings = []
-        self.stock = []
+        self.notes = []
         for i in range(0,self.frames_adv):
             self.update()
 
@@ -57,9 +58,15 @@ class PreventBall(Ball):
         self.gravity()
         self.move()
         self.update_strings()
+        self.update_notes()
         self.draw()
-        for i in self.stock:
-            i.update()
+        
+    def update_notes(self):
+        for i in self.notes:
+            if i.life < 0:
+                self.notes.remove(i)
+            else:
+                i.update()
 
     def save_pos(self):
         """saves current pos in pre_x and pre_y"""
@@ -76,16 +83,16 @@ class PreventBall(Ball):
             else:
                 line.update()
     
-    def spawn(self, color, radius, num, type, pos):
-        object = Point(self.windows, color, radius, num, type, pos)
-        self.stock.append(object)
+    def spawn(self, color : tuple, radius : int, num : int, type : int, pos : tuple):
+        note = Point(self.windows, color, radius, num, type, pos, self.frames_adv)
+        self.notes.append(note)
 
 
 class HitBall(Ball):
     """the main player controlled ball"""
-    def __init__(self, win, color):
+    def __init__(self, win : pg.surface, color : tuple , power : float):
         self.hit_counter = 0
-        super().__init__(win, color)
+        super().__init__(win, color, power)
 
     def hit(self):
         self.hit_counter = 30
@@ -97,9 +104,9 @@ class HitBall(Ball):
             pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius+30-self.hit_counter, 5)
     
 class HalfBall(HitBall):
-    def __init__(self, win : pg.surface, color : tuple,add : list, frames_advantage : int):
+    def __init__(self, win : pg.surface, color : tuple,add : list, frames_advantage : int, power : float):
         """window to draw on, ball color, ball to predict, number of frames more than copied ball"""
-        super().__init__(win, color)
+        super().__init__(win, color, power)
         self.velocity = add
         self.frames_adv = frames_advantage
         self.strings = []
