@@ -37,6 +37,18 @@ class Ball():
         """adds velocity"""
         self.y += self.velocity[1] * self.power
         self.x += self.velocity[0] * self.power
+        self.bounce()
+    
+    def bounce(self):
+        if self.y < 0:
+            self.velocity[1] *= -1
+        elif self.y > self.windows.get_height():
+            self.velocity[1] *= -1
+
+        if self.x < 0:
+            self.velocity[0] *= -1
+        elif self.x > self.windows.get_width():
+            self.velocity[0] *= -1
     
     def draw(self):
         pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
