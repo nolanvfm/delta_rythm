@@ -2,6 +2,7 @@ import pygame as pg
 import random
 import math
 from Game.strings import string
+from Game.Key import Point
 
 class Ball():
     """do not use this class, this is only a parent"""
@@ -47,6 +48,7 @@ class PreventBall(Ball):
         self.velocity = add
         self.frames_adv = frames_advantage
         self.strings = []
+        self.stock = []
         for i in range(0,self.frames_adv):
             self.update()
 
@@ -56,6 +58,8 @@ class PreventBall(Ball):
         self.move()
         self.update_strings()
         self.draw()
+        for i in self.stock:
+            i.update()
 
     def save_pos(self):
         """saves current pos in pre_x and pre_y"""
@@ -71,6 +75,11 @@ class PreventBall(Ball):
                 self.strings.remove(line)
             else:
                 line.update()
+    
+    def spawn(self, color, radius, num, type, pos):
+        object = Point(self.windows, color, radius, num, type, pos)
+        self.stock.append(object)
+
 
 class HitBall(Ball):
     """the main player controlled ball"""

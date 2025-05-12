@@ -1,16 +1,18 @@
 import pygame as pg
 import math
-from Ball import Ball
-
+        
 class Point():
-    def __init__(self, prevents, radius):
-        self.PreventsBalls = prevents
+    def __init__(self,win , color, radius, num, type, pos):
         self.radius = radius
-
-    def addPoint(self, num, type, ):
-        pass
+        self.windows = win
+        self.color = color
+        self.pos = pos
+        self.num = num
+        self.type = type
 
     def update(self):
-        draw()
+        self.draw()
 
     def draw(self):
+        pg.draw.circle(self.windows, self.color, self.pos, self.radius)
+        
