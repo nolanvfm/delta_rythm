@@ -1,10 +1,12 @@
 import sys
 from pygame.locals import *
 from Game.Ball import *
+from Game.Key import *
 
 pg.init()
 Balls = [] 
-preventBalls = [] 
+preventBalls = []
+HitKey = [] 
 # Colours
 BACKGROUND = (0, 0, 0)
  
@@ -14,6 +16,7 @@ fpsClock = pg.time.Clock()
  
 WINDOW = pg.display.set_mode((0,0))
 pg.display.set_caption('My Game!')
+
 
 
 def pg_events():
@@ -39,18 +42,22 @@ def pg_events():
           Balls.clear()
           preventBalls.clear()
         
+        if event.key == pg.K_i:
+          for i in preventBalls:
+            i.spawn((255,0,0), i.radius, 0, 0, (i.x,i.y))
         if event.key == pg.K_SPACE:
           for i in Balls:
             i.hit()
 
 def update_balls():
   """updates the balls and strings"""
-  for i in preventBalls:
-    i.update()
-  for i in Balls:
+  fast_update(Balls)
+  fast_update(preventBalls)
+
+def fast_update(l):
+  for i in l:
     i.update()
 
-    
 def main():
   looping = True
   
