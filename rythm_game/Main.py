@@ -18,7 +18,7 @@ fpsClock = pg.time.Clock()
 
 WINDOW = pg.display.set_mode((1366,768))
 w_scl = WINDOW.get_width()
-DISPLAY_WIN = pg.display.set_mode((500,500),pg.RESIZABLE)
+DISPLAY_WIN = pg.display.set_mode((0,0))
 window_scale = DISPLAY_WIN.get_width() / w_scl
 pg.display.set_caption('My Game!')
 
