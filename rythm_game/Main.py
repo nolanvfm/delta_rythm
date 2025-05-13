@@ -14,11 +14,13 @@ BACKGROUND = (0, 0, 0)
 # Game Setup
 FPS = 60
 fpsClock = pg.time.Clock()
- 
-WINDOW = pg.display.set_mode((0,0))
+
+
+WINDOW = pg.display.set_mode((1366,768))
+w_scl = WINDOW.get_width()
+DISPLAY_WIN = pg.display.set_mode((500,500),pg.RESIZABLE)
+window_scale = DISPLAY_WIN.get_width() / w_scl
 pg.display.set_caption('My Game!')
-
-
 
 def pg_events():
   """for quitting the game and user inputs"""
@@ -29,15 +31,15 @@ def pg_events():
 
     elif event.type == pg.KEYDOWN:
         if event.key == pg.K_h:
-          temp = HitBall(WINDOW, (255,255,255), 0.2)
+          temp = HitBall(WINDOW, window_scale, (255,255,255), 0.2)
           Balls.append(temp)
-          Balls.append(HalfBall(WINDOW, (0,255,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2 ))
-          preventBalls.append(PreventBall(WINDOW, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2))
+          Balls.append(HalfBall(WINDOW, window_scale, (0,255,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2 ))
+          preventBalls.append(PreventBall(WINDOW, window_scale, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2))
 
         if event.key == pg.K_b:
-          temp = HitBall(WINDOW, (255,255,255))
+          temp = HitBall(WINDOW, window_scale, (255,255,255))
           Balls.append(temp)
-          preventBalls.append(PreventBall(WINDOW, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2))
+          preventBalls.append(PreventBall(WINDOW, window_scale, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30))
           
         if event.key == pg.K_z:
           Balls.clear()
@@ -73,6 +75,7 @@ def main():
     
     update_balls()
     
-    pg.display.update()
+    pg.transform.scale(WINDOW, DISPLAY_WIN.get_size(), DISPLAY_WIN)
+    pg.display.flip()
  
 main()

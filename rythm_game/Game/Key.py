@@ -2,7 +2,7 @@ import pygame as pg
 import math
         
 class Point():
-    def __init__(self,win , color : tuple, radius : int, num : int ,type : int, pos : tuple, life : int):
+    def __init__(self,win : pg.surface, color : tuple, radius : int, num : int ,type : int, pos : tuple, life : int):
         self.radius = radius
         self.windows = win
         self.color = color
