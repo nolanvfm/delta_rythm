@@ -1,8 +1,9 @@
 import pygame as pg
 
 class string():
-    def __init__(self, win : pg.surface, start : tuple, end : tuple, lifespan : int):
+    def __init__(self, win : pg.surface, scale : float, start : tuple, end : tuple, lifespan : int):
         self.win = win
+        self.scale = scale
         self.start = start
         self.end = end
         self.life = lifespan
@@ -12,4 +13,4 @@ class string():
         self.draw()
 
     def draw(self):
-        pg.draw.line(self.win,(0,0,255),self.start,self.end,5)
+        pg.draw.line(self.win,(0,0,255),self.start,self.end,int(5*self.scale))
