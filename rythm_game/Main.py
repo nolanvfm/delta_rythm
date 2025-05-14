@@ -2,12 +2,9 @@ import sys
 import pygame as pg
 from pygame.locals import *
 from Game.Ball import *
+from Game_engine import *
 from Game.Key import *
-
 pg.init()
-Balls = [] 
-preventBalls = []
-HitKey = [] 
 # Colours
 BACKGROUND = (0, 0, 0)
  
@@ -22,47 +19,11 @@ DISPLAY_WIN = pg.display.set_mode((0,0))
 window_scale = DISPLAY_WIN.get_width() / w_scl
 pg.display.set_caption('My Game!')
 
-def pg_events():
-  """for quitting the game and user inputs"""
-  for event in pg.event.get():
-    if event.type == QUIT :
-      pg.quit()
-      sys.exit()
-
-    elif event.type == pg.KEYDOWN:
-        if event.key == pg.K_h:
-          temp = HitBall(WINDOW, window_scale, (255,255,255), 0.2)
-          Balls.append(temp)
-          Balls.append(HalfBall(WINDOW, window_scale, (0,255,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2 ))
-          preventBalls.append(PreventBall(WINDOW, window_scale, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30, 0.2))
-
-        if event.key == pg.K_b:
-          temp = HitBall(WINDOW, window_scale, (255,255,255))
-          Balls.append(temp)
-          preventBalls.append(PreventBall(WINDOW, window_scale, (0,0,255), [temp.velocity[0],temp.velocity[1]], 30))
-          
-        if event.key == pg.K_z:
-          Balls.clear()
-          preventBalls.clear()
-        
-        if event.key == pg.K_i:
-          for i in preventBalls:
-            i.spawn((255,0,0), i.radius, 0, 0, (i.x,i.y))
-        if event.key == pg.K_SPACE:
-          for i in Balls:
-            i.hit()
-
-def update_balls():
-  """updates the balls and strings"""
-  fast_update(Balls)
-  fast_update(preventBalls)
-
-def fast_update(l):
-  for i in l:
-    i.update()
+Game = GameEngine(WINDOW,window_scale)
 
 def main():
   looping = True
+  timer = 0
   
   # main game loop
   while looping:
@@ -71,9 +32,13 @@ def main():
     #clear the entire screen
     WINDOW.fill(BACKGROUND)
     
-    pg_events()
-    
-    update_balls()
+    Game.pg_events()
+    Game.update_balls()
+    if timer >= 60:
+        Game.create_A_Ball(WINDOW,window_scale,(255,255,255),30,"space")
+        timer = 0
+    else:
+       timer+= 0
     
     pg.transform.scale(WINDOW, DISPLAY_WIN.get_size(), DISPLAY_WIN)
     pg.display.flip()

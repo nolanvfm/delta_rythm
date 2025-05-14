@@ -6,7 +6,7 @@ from Game.Key import Point
 
 class Ball():
     """do not use this class, this is only a parent"""
-    def __init__(self, win : pg.surface, scale : float,color : tuple, power : float = 1):
+    def __init__(self, win : pg.surface, scale : float,color : tuple,key : str , power : float = 1):
         self.y = 100
         self.x = 100
         self.velocity = [0 + random.randint(1,20) ,0 + random.randint(1,20)]
@@ -14,6 +14,7 @@ class Ball():
         self.radius = 10*scale
         self.color = color
         self.power = power
+        self.key = key
     
     def update(self):
         self.gravity()
@@ -55,9 +56,9 @@ class Ball():
 
 
 class PreventBall(Ball):
-    def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int, power : float = 1):
+    def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int,key : str,  power : float = 1):
         """window to draw on, ball color, ball to predict, number of frames more than copied ball"""
-        super().__init__(win, scale, color, power)
+        super().__init__(win, scale, color,key ,power)
         self.velocity = add
         self.scale = scale
         self.frames_adv = frames_advantage
@@ -100,13 +101,23 @@ class PreventBall(Ball):
         note = Point(self.windows, color, radius, num, type, pos, self.frames_adv)
         self.notes.append(note)
 
+    def hit(self):
+        if len(self.notes) > 0:
+            self.getting_hit()
+
+    def getting_hit(self):
+        if self.notes[0].life <= 5:
+            self.notes.pop(0)
+    
+
+
 
 class HitBall(Ball):
     """the main player controlled ball"""
-    def __init__(self, win : pg.surface, scale : float,color : tuple , power : float = 1):
+    def __init__(self, win : pg.surface, scale : float,color : tuple , key : str,power : float = 1):
         self.hit_counter = 0
         self.scale = scale
-        super().__init__(win, scale, color, power)
+        super().__init__(win, scale, color,key ,power)
 
     def hit(self):
         self.hit_counter = 30
@@ -118,9 +129,9 @@ class HitBall(Ball):
             pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius+30*self.scale-self.hit_counter*self.scale, int(5*self.scale))
     
 class HalfBall(HitBall):
-    def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int, power : float = 1):
+    def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int, key : str,power : float = 1):
         """window to draw on, ball color, ball to predict, number of frames more than copied ball"""
-        super().__init__(win, scale, color, power)
+        super().__init__(win, scale, color,key ,power)
         self.velocity = add
         self.scale = scale
         self.frames_adv = frames_advantage

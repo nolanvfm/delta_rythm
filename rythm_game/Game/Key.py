@@ -10,10 +10,10 @@ class Point():
         self.num = num
         self.type = type
         self.life = life
-
     def update(self):
         self.life -= 1
-        self.draw()
+        if self.life > 0:
+            self.draw()
 
     def draw(self):
         pg.draw.circle(self.windows, self.color, self.pos, self.radius)
