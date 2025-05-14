@@ -13,4 +13,4 @@ class string():
         self.draw()
 
     def draw(self):
-        pg.draw.line(self.win,(0,0,255),self.start,self.end,int(5*self.scale))
+        pg.draw.line(self.win,pg.Color(0,0,255,a=200),self.start,self.end,int(5*self.scale))
