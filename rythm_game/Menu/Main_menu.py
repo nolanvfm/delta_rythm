@@ -36,17 +36,18 @@ class MENU():
                 self.is_game = True
                 
     def draw_menu(self):
-        
+        self.timer += 1
+        self.draw_ball()
 
+    def draw_ball(self, frame_adv = 0):
         self.pre_ball_x = self.ball_x
         self.pre_ball_y = self.ball_y
         
         
         
-        self.timer += 1
         
-        self.ball_x = self.halfwidth + self.halfwidth*cos(self.timer*self.speed)/1.5
-        self.ball_y = self.halfheight + self.halfheight*sin(self.timer*self.speed)/1.5
+        self.ball_x = self.halfwidth + self.halfwidth*cos((self.timer+frame_adv)*self.speed)/1.5
+        self.ball_y = self.halfheight + self.halfheight*sin((self.timer+frame_adv)*self.speed)/1.5
         
         pg.draw.rect(self.window,(255,255,255),(0,0,self.window.get_width(),self.window.get_height()))
         pg.draw.circle(self.window,(0,0,255),(self.ball_x,self.ball_y),50*self.scale)

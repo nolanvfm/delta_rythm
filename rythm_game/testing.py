@@ -1,6 +1,9 @@
-salut = ["lol", "kiko", "ah"]
+import importlib
+import os
 
-lol = ["bruh", "nonnnn", "test"]
+liste = []
 
-for i in salut,lol:
-    print(i)
+for filename in os.listdir("Map"):
+    if filename != "Music" and filename != "template.py" and filename != "__pycache__":
+        a = importlib.import_module("."+filename[:len(filename)-3], "Map")
+        liste.append(a.Constructor())
