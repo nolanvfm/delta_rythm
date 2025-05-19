@@ -19,18 +19,18 @@ class GameEngine():
         pg.quit()
         sys.exit()
 
-      elif event.type == pg.KEYDOWN:
-          if event.key == pg.K_h:
+      elif event.type == KEYDOWN:
+          if event.key == K_h:
             self.create_A_Ball(self.window, self.window_scale, (255,255,255), 30, "a")
 
-          if event.key == pg.K_b:
+          if event.key == K_b:
             self.create_A_Ball(self.window, self.window_scale, (255,255,255), 30, "e", "half")
             
-          if event.key == pg.K_z:
+          if event.key == K_z:
             self.Balls.clear()
             self.preventBalls.clear()
           
-          if event.key == pg.K_i:
+          if event.key == K_i:
             for i in self.preventBalls:
               i.spawn((255,0,0), i.radius, 0, 0, (i.x,i.y))
           self.fast_hit(self.Balls, event)
