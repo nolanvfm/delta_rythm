@@ -4,7 +4,7 @@ class Constructor(Template):
     def __init__(self):
         super().__init__()
         self.timer = 0
-        self.color = (0,255,0)
+        self.color = (255,0,0)
         
     def play(self, game_engine):
         self.timer += 1

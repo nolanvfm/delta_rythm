@@ -20,10 +20,10 @@ class GameEngine():
         sys.exit()
 
       elif event.type == KEYDOWN:
-          if event.key == K_h:
+          if event.key == K_b:
             self.create_A_Ball(self.window, self.window_scale, (255,255,255), 30, "a")
 
-          if event.key == K_b:
+          if event.key == K_h:
             self.create_A_Ball(self.window, self.window_scale, (255,255,255), 30, "e", "half")
             
           if event.key == K_z:

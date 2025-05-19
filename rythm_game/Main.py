@@ -30,10 +30,12 @@ def menu():
   Menu.update()
   is_menu = Menu.is_menu
   is_game = Menu.is_game
-  return (is_game,is_menu)
+  map = Menu.map
+  return (is_game,is_menu,map)
 
-def game():
+def game(map):
   global timer
+  map.play(Game)
   Game.pg_events()
   Game.update_balls()
   if timer >= 60:
@@ -54,9 +56,9 @@ def main():
     WINDOW.fill(BACKGROUND)
     
     if is_menu:
-      is_game,is_menu = menu()
+      is_game,is_menu,map = menu()
     elif is_game:
-      game()
+      game(map)
     
     pg.transform.scale(WINDOW, DISPLAY_WIN.get_size(), DISPLAY_WIN)
     pg.display.flip()
