@@ -9,7 +9,7 @@ class Ball():
     def __init__(self, win : pg.surface, scale : float,color : tuple,key : str , power : float = 1):
         self.y = 100
         self.x = 100
-        self.velocity = [0 + random.randint(1,20) ,0 + random.randint(1,20)]
+        self.velocity = pg.Vector2([0 + random.randint(1,20) ,0 + random.randint(1,20)])
         self.windows = win
         self.radius = 10*scale
         self.color = color
@@ -25,31 +25,31 @@ class Ball():
         """pulls the ball's velocity towards the center of the screen"""
         # distance = math.sqrt((self.windows.get_width()/2 - self.x)**2 + (self.windows.get_height()/2 - self.y)**2)
         if self.y < self.windows.get_height()/2:
-            self.velocity[1] += 1+self.power
+            self.velocity.y += 1+self.power
         else:
-            self.velocity[1] -= 1+self.power
+            self.velocity.y -= 1+self.power
 
         if self.x < self.windows.get_width()/2:
-            self.velocity[0] += 1+self.power
+            self.velocity.x += 1+self.power
         else:
-            self.velocity[0] -= 1+self.power
+            self.velocity.x -= 1+self.power
 
     def move(self):
         """adds velocity"""
-        self.y += self.velocity[1] * self.power
-        self.x += self.velocity[0] * self.power
+        self.y += self.velocity.y * self.power
+        self.x += self.velocity.x * self.power
         self.bounce()
     
     def bounce(self):
         if self.y-self.radius < 0:
-            self.velocity[1] *= -0.5
+            self.velocity.y *= -0.5
         elif self.y+self.radius > self.windows.get_height():
-            self.velocity[1] *= -0.5
+            self.velocity.y *= -0.5
 
         if self.x-self.radius < 0:
-            self.velocity[0] *= -0.5
+            self.velocity.x *= -0.5
         elif self.x+self.radius > self.windows.get_width():
-            self.velocity[0] *= -0.5
+            self.velocity.x *= -0.5
     
     def draw(self):
         pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
@@ -59,8 +59,9 @@ class PreventBall(Ball):
     def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int,key : str,  power : float = 1):
         """window to draw on, ball color, ball to predict, number of frames more than copied ball"""
         super().__init__(win, scale, color,key ,power)
-        self.velocity = add
+        self.velocity = pg.Vector2(add[0],add[1])
         self.scale = scale
+        self.snake_width = 50
         self.frames_adv = frames_advantage
         self.strings = []
         self.notes = []
@@ -89,7 +90,7 @@ class PreventBall(Ball):
 
     def update_strings(self):
         """adds, updates and removes strings, important to do after moving"""
-        self.strings.append(string(self.windows, self.scale,(self.pre_x,self.pre_y),(self.x,self.y),self.frames_adv))
+        self.strings.append(string(self.windows, self.scale,(self.pre_x,self.pre_y),(self.x,self.y),self.frames_adv,"snake",self.snake_width))
 
         for line in self.strings:
             if line.life <= 0:
@@ -109,7 +110,14 @@ class PreventBall(Ball):
         if self.notes[0].life <= 5:
             self.notes.pop(0)
     
-
+    def draw(self):
+        left = pg.Vector2(self.velocity.y, self.velocity.x*-1).normalize()*self.snake_width
+        right = pg.Vector2(self.velocity.y*-1, self.velocity.x).normalize()*self.snake_width
+        
+        pg.draw.circle(self.windows, self.color, (self.x+left[0],self.y+left[1]), self.radius)
+        pg.draw.circle(self.windows, self.color, (self.x+right[0],self.y+right[1]), self.radius)
+        
+        pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
 
 
 class HitBall(Ball):
@@ -132,7 +140,7 @@ class HalfBall(HitBall):
     def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int, key : str,power : float = 1):
         """window to draw on, ball color, ball to predict, number of frames more than copied ball"""
         super().__init__(win, scale, color,key ,power)
-        self.velocity = add
+        self.velocity = pg.Vector2(add[0],add[1])
         self.scale = scale
         self.frames_adv = frames_advantage
         self.strings = []
