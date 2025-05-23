@@ -8,6 +8,7 @@ class string():
         self.end = pg.Vector2(end[0], end[1])
         self.life = lifespan
         self.type = type
+        self.snake_width_original = width
         self.snake_width = width
 
     def update(self):
@@ -17,13 +18,14 @@ class string():
     def draw(self):
         if self.type == "snake":
             try:
+                if self.life <= 10:
+                    self.snake_width = self.snake_width_original*self.life/10
+                
                 dir_vector = self.end - self.start
                 
-                left = pg.Vector2(dir_vector[1], dir_vector[0]*-1).normalize()*self.snake_width
-                right = pg.Vector2(dir_vector[1]*-1, dir_vector[0]).normalize()*self.snake_width
-                
-                pg.draw.circle(self.win, pg.Color(0,0,255), (self.start.x+left[0],self.start.y+left[1]), 10*self.scale)
-                pg.draw.circle(self.win, pg.Color(0,0,255), (self.start.x+right[0],self.start.y+right[1]), 10*self.scale)
+                self.left = pg.Vector2(dir_vector[1], dir_vector[0]*-1).normalize()*self.snake_width
+                self.right = pg.Vector2(dir_vector[1]*-1, dir_vector[0]).normalize()*self.snake_width
+
             except:
                 print("fatal error, ball decided moving was overrated")
             

@@ -11,4 +11,4 @@ class Constructor(Template):
         
         if self.timer % 60 == 0:
             for i in game_engine.preventBalls:
-                i.spawn((255,0,0), i.radius, 0, 0, (i.x,i.y))
+                i.spawn((255,0,0), i.radius, 0, 0, (i.pos.x,i.pos.y))

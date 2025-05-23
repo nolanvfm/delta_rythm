@@ -7,14 +7,14 @@ from Game.Key import Point
 class Ball():
     """do not use this class, this is only a parent"""
     def __init__(self, win : pg.surface, scale : float,color : tuple,key : str , power : float = 1):
-        self.y = 100
-        self.x = 100
+        self.pos = pg.Vector2(100,100)
         self.velocity = pg.Vector2([0 + random.randint(1,20) ,0 + random.randint(1,20)])
         self.windows = win
         self.radius = 10*scale
         self.color = color
         self.power = power
         self.key = key
+        self.deal_dmg = 0
     
     def update(self):
         self.gravity()
@@ -23,36 +23,36 @@ class Ball():
     
     def gravity(self):
         """pulls the ball's velocity towards the center of the screen"""
-        # distance = math.sqrt((self.windows.get_width()/2 - self.x)**2 + (self.windows.get_height()/2 - self.y)**2)
-        if self.y < self.windows.get_height()/2:
+        # distance = math.sqrt((self.windows.get_width()/2 - self.pos.x)**2 + (self.windows.get_height()/2 - self.pos.y)**2)
+        if self.pos.y < self.windows.get_height()/2:
             self.velocity.y += 1+self.power
         else:
             self.velocity.y -= 1+self.power
 
-        if self.x < self.windows.get_width()/2:
+        if self.pos.x < self.windows.get_width()/2:
             self.velocity.x += 1+self.power
         else:
             self.velocity.x -= 1+self.power
 
     def move(self):
         """adds velocity"""
-        self.y += self.velocity.y * self.power
-        self.x += self.velocity.x * self.power
+        self.pos.y += self.velocity.y * self.power
+        self.pos.x += self.velocity.x * self.power
         self.bounce()
     
     def bounce(self):
-        if self.y-self.radius < 0:
+        if self.pos.y-self.radius < 0:
             self.velocity.y *= -0.5
-        elif self.y+self.radius > self.windows.get_height():
+        elif self.pos.y+self.radius > self.windows.get_height():
             self.velocity.y *= -0.5
 
-        if self.x-self.radius < 0:
+        if self.pos.x-self.radius < 0:
             self.velocity.x *= -0.5
-        elif self.x+self.radius > self.windows.get_width():
+        elif self.pos.x+self.radius > self.windows.get_width():
             self.velocity.x *= -0.5
     
     def draw(self):
-        pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
+        pg.draw.circle(self.windows, self.color, (self.pos.x,self.pos.y), self.radius)
 
 
 class PreventBall(Ball):
@@ -61,10 +61,11 @@ class PreventBall(Ball):
         super().__init__(win, scale, color,key ,power)
         self.velocity = pg.Vector2(add[0],add[1])
         self.scale = scale
-        self.snake_width = 50
+        self.snake_width = 20
         self.frames_adv = frames_advantage
         self.strings = []
         self.notes = []
+        self.sprite = []
         for i in range(0,self.frames_adv):
             self.update()
 
@@ -73,24 +74,25 @@ class PreventBall(Ball):
         self.gravity()
         self.move()
         self.update_strings()
-        self.update_notes()
         self.draw()
+        self.update_notes()
         
     def update_notes(self):
         for i in self.notes:
             if i.life < 0:
                 self.notes.remove(i)
+                self.deal_dmg = 100
             else:
                 i.update()
 
     def save_pos(self):
         """saves current pos in pre_x and pre_y"""
-        self.pre_x = self.x
-        self.pre_y = self.y
+        self.pre_x = self.pos.x
+        self.pre_y = self.pos.y
 
     def update_strings(self):
         """adds, updates and removes strings, important to do after moving"""
-        self.strings.append(string(self.windows, self.scale,(self.pre_x,self.pre_y),(self.x,self.y),self.frames_adv,"snake",self.snake_width))
+        self.strings.append(string(self.windows, self.scale,(self.pre_x,self.pre_y),(self.pos.x,self.pos.y),self.frames_adv,"snake",self.snake_width))
 
         for line in self.strings:
             if line.life <= 0:
@@ -104,20 +106,34 @@ class PreventBall(Ball):
 
     def hit(self):
         if len(self.notes) > 0:
-            self.getting_hit()
-
-    def getting_hit(self):
-        if self.notes[0].life <= 5:
-            self.notes.pop(0)
+            if self.notes[0].life <= 5:
+                self.notes.pop(0)
+                self.deal_dmg = -20
     
     def draw(self):
-        left = pg.Vector2(self.velocity.y, self.velocity.x*-1).normalize()*self.snake_width
-        right = pg.Vector2(self.velocity.y*-1, self.velocity.x).normalize()*self.snake_width
         
-        pg.draw.circle(self.windows, self.color, (self.x+left[0],self.y+left[1]), self.radius)
-        pg.draw.circle(self.windows, self.color, (self.x+right[0],self.y+right[1]), self.radius)
-        
-        pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
+        if len(self.strings) >= 2:
+            
+            self.left = pg.Vector2(self.velocity.y, self.velocity.x*-1).normalize()*self.snake_width
+            self.right = pg.Vector2(self.velocity.y*-1, self.velocity.x).normalize()*self.snake_width
+            
+            self.sprite = []
+            
+            
+            for string in self.strings:
+                self.sprite.append(string.start + string.left)
+            
+            self.sprite.append((self.pos+ self.left))
+            self.sprite.append((self.pos+ self.right))
+            
+            for string in range(len(self.strings)-1,-1,-1):
+                self.sprite.append(self.strings[string].right + self.strings[string].start)
+            
+            
+            
+            pg.draw.polygon(self.windows,(0,0,255),self.sprite)
+            
+        pg.draw.circle(self.windows, self.color, (self.pos.x,self.pos.y), self.radius)
 
 
 class HitBall(Ball):
@@ -131,10 +147,10 @@ class HitBall(Ball):
         self.hit_counter = 30
 
     def draw(self):
-        pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius)
+        pg.draw.circle(self.windows, self.color, (self.pos.x,self.pos.y), self.radius)
         if self.hit_counter >= 0:
             self.hit_counter -= 5
-            pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius+30*self.scale-self.hit_counter*self.scale, int(5*self.scale))
+            pg.draw.circle(self.windows, self.color, (self.pos.x,self.pos.y), self.radius+30*self.scale-self.hit_counter*self.scale, int(5*self.scale))
     
 class HalfBall(HitBall):
     def __init__(self, win : pg.surface, scale : float,color : tuple,add : list, frames_advantage : int, key : str,power : float = 1):
@@ -148,7 +164,7 @@ class HalfBall(HitBall):
             self.update()
 
     def draw(self):
-        pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius,0,True,True)
+        pg.draw.circle(self.windows, self.color, (self.pos.x,self.pos.y), self.radius,0,True,True)
         if self.hit_counter >= 0:
             self.hit_counter -= 5
-            pg.draw.circle(self.windows, self.color, (self.x,self.y), self.radius+30*self.scale-self.hit_counter*self.scale, int(5*self.scale),True,True)
+            pg.draw.circle(self.windows, self.color, (self.pos.x,self.pos.y), self.radius+30*self.scale-self.hit_counter*self.scale, int(5*self.scale),True,True)
