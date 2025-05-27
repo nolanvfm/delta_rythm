@@ -70,7 +70,7 @@ def main():
     
     if Menu.is_menu:
       Menu.update()
-    elif Menu.is_game: #has the menu decided we are in game state?
+    elif Menu.is_game: #Menu decides the game state
       game(Menu.map)
     
     pg.transform.scale(WINDOW, DISPLAY_WIN.get_size(), DISPLAY_WIN)
