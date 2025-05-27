@@ -5,8 +5,12 @@ class Constructor(Template):
         super().__init__()
         self.timer = 0
         self.color = (0,255,0)
+        self.music_path = "Map/Music/sunny-day-walk-277318.mp3"
         
     def play(self, game_engine):
+        if not self.music_started:
+            self.start_music()
+            
         self.timer += 1
         
         if self.timer % 60 == 0:

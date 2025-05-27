@@ -1,2 +1,0 @@
-rajouter balls orange/rouge
-faire que les balls sont emsemble pour la lisibiliter du code
