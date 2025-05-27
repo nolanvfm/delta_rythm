@@ -1,3 +1,4 @@
 rajouter balls orange/rouge
 faire que les balls sont emsemble pour la lisibiliter du code
 add more documentation to the code
+implement better ball physics
