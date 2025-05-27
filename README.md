@@ -54,6 +54,22 @@ python Main.py
 
 ## Contributing
 
+This is a collaborative project. If you're working on this project:
+
+1. Always pull the latest changes before starting work:
+```bash
+git pull
+```
+
+2. Make your changes and test them locally
+
+3. Commit and push your changes:
+```bash
+git add .
+git commit -m "Description of your changes"
+git push
+```
+
 Feel free to fork the project and submit pull requests for any improvements you'd like to add.
 
 ## License
